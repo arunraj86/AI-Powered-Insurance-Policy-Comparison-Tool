@@ -45,6 +45,7 @@ def main():
             except Exception as e:
                 logging.error(f"Error in comparison: {e}")
                 st.error("An error occurred during comparison. Please check the logs for details.")
+                st.error(f"An error occurred during in app: {e}")  # Display the error in Streamlit UI
         else:
             st.error("Please fill out all fields for each policy.")
 

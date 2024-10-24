@@ -128,4 +128,5 @@ def compare_policies_with_model(policies, model="Llama 3.1 70B"):
 
     except Exception as e:
         logging.error(f"Error during AI model inference: {e}")
+        st.error(f"An error occurred during AI model inference: {e}")  # Display the error in Streamlit UI
         raise e
