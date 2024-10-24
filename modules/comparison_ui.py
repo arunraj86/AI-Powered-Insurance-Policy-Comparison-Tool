@@ -13,6 +13,10 @@ def comparison_form(insurance_type):
         reset_form()
         st.session_state['previous_insurance_type'] = insurance_type 
 
+    # Add a reset button to manually clear inputs
+    if st.button("Clear Data"):
+        reset_form()
+        
     # Number of policies input
     num_policies = st.number_input('Enter number of policies to compare:', min_value=2, max_value=10, step=1)
 
