@@ -1,7 +1,7 @@
 import os
 import logging
 from dotenv import load_dotenv
-import openai
+from openai import OpenAI
 from groq import Groq
 import pandas as pd
 import streamlit as st
@@ -23,7 +23,7 @@ if not openai_api_key:
 
 # Initialize the clients
 groq_client = Groq(api_key=groq_api_key)
-openai.api_key = openai_api_key
+client = OpenAI(api_key=openai_api_key)
 
 def create_policy_comparison_prompt(policies):
     """Create a structured prompt to compare insurance policies with markdown table format."""
@@ -69,10 +69,10 @@ def parse_gpt_response(response_text):
 
     # Split lines and remove markdown syntax
     lines = table_text.strip().split('\n')
-    
+
     headers = [col.strip() for col in lines[0].split('|') if col.strip()]
     rows = []
-    
+
     for line in lines[2:]:
         cols = [col.strip() for col in line.split('|') if col.strip()]
         if cols:
@@ -102,25 +102,25 @@ def compare_policies_with_model(policies, model="Llama 3.1 70B"):
             if response.choices and len(response.choices) > 0:
                 # Return the plain Llama response without attempting to parse it
                 return None, response.choices[0].message.content  # Return Llama response text only
-        
+
         elif model == "OpenAI GPT-4":
-            # Call the OpenAI API for GPT-4
-            response = openai.completions.create(
-                model="gpt-4",
+            # Use the Chat API for GPT-4
+            response = client.chat.completions.create(
+                model="gpt-4",  # Specify the chat model
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": prompt}
+                    {"role": "system", "content": "You are a helpful assistant."},  # System message defining the assistant's role
+                    {"role": "user", "content": prompt}  # User's prompt (e.g., the insurance policies comparison request)
                 ],
-                max_tokens=1500,
-                temperature=0.7
+                max_tokens=1500,  # Maximum tokens in the response
+                temperature=0.7  # Controls the creativity or randomness of the response)
             )
             if response.choices and len(response.choices) > 0:
                 # Get the content from the GPT response
                 response_text = response.choices[0].message.content
-                
+
                 # Parse the GPT response text into a table and return both the table and the text
                 comparison_table, full_text = parse_gpt_response(response_text)
-                
+
                 return comparison_table, full_text
 
         else:
