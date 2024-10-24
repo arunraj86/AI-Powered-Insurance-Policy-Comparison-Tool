@@ -1,0 +1,4 @@
+2024-10-21 14:52:25 - INFO - Starting policy comparison
+2024-10-21 14:52:25 - ERROR - An error occurred: module 'groq' has no attribute 'compare_policies'
+2024-10-21 19:38:07 - INFO - Starting policy comparison
+2024-10-21 19:38:07 - ERROR - HTTP error occurred: 404 Client Error: Not Found for url: https://api.groq.com/openai/v1/completions
