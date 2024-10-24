@@ -1,3 +1,4 @@
+import streamlit as st
 from dotenv import load_dotenv
 import logging
 from modules.logger import setup_logging
@@ -48,5 +49,4 @@ def main():
             st.error("Please fill out all fields for each policy.")
 
 if __name__ == '__main__':
-    import streamlit as st
-    st.run()
+    main()
