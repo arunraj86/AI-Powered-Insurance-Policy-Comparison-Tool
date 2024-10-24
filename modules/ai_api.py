@@ -105,7 +105,7 @@ def compare_policies_with_model(policies, model="Llama 3.1 70B"):
         
         elif model == "OpenAI GPT-4":
             # Call the OpenAI API for GPT-4
-            response = openai.chat.completions.create(
+            response = openai.completions.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": "You are a helpful assistant."},
