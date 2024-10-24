@@ -26,8 +26,8 @@ def main():
     selected_model, selected_insurance_type = model_options()
 
     # Display form for insurance policy comparison
-    policies = comparison_form()
-    
+    policies = comparison_form(selected_insurance_type)
+       
     # Comparison button logic
     if st.button("Compare Policies"):
         if all([p['provider'] and p['coverage'] for p in policies]):
