@@ -13,7 +13,7 @@ load_dotenv()
 #openai_api_key = os.getenv("OPENAI_API_KEY", "")
 # Accessing the keys from Streamlit secrets
 groq_api_key = st.secrets["GROQ_API_KEY"]
-openai_api_key = st.secrets["OPENAI_KEY"]
+openai_api_key = st.secrets["OPENAI_API_KEY"]
 
 if not groq_api_key:
     raise ValueError("GROQ API key not found! Please set the 'GROQ_API_KEY' environment variable.")
