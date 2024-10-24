@@ -6,13 +6,37 @@ def model_options():
     st.sidebar.markdown(
         """
         <style>
-        /* Change sidebar background color */
+        /* Sidebar background color */
         [data-testid="stSidebar"] {
-            background-color: #f0f0f5;
+            background-color: #333333; /* Dark background */
+            color: #ffffff; /* White text */
         }
-        /* Adjust the text color for sidebar headers */
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] h4 {
-            color: #00796b;
+
+        /* Sidebar text color */
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, 
+        [data-testid="stSidebar"] h3, [data-testid="stSidebar"] h4, 
+        [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
+            color: #ffffff; /* White text for headers and labels */
+        }
+
+        /* Sidebar input field background color */
+        [data-testid="stSidebar"] input {
+            background-color: #444444; /* Slightly lighter background for input fields */
+            color: #ffffff; /* White text */
+        }
+
+        /* Adjust scrollbar colors for better visibility */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888; 
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
         }
         </style>
         """,
