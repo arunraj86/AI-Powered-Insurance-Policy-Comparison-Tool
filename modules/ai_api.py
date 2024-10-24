@@ -25,16 +25,18 @@ if not openai_api_key:
 groq_client = Groq(api_key=groq_api_key)
 client = OpenAI(api_key=openai_api_key)
 
-def create_policy_comparison_prompt(policies):
+def create_policy_comparison_prompt(policies, insurance_type):
     """Create a structured prompt to compare insurance policies with markdown table format."""
+    num_policies = len(policies)
     prompt = (
-        "You are a financial expert. Please compare the following insurance policies in detail. "
+        f"You are a financial expert specializing in {insurance_type} insurance. "
+        f"Please compare the following {num_policies} {insurance_type} insurance policies in detail. "
         "Your response should include:\n"
         "1. A **Comparison Report** in the form of a markdown table. The table should have the following columns: "
         "`Provider Name`, `Coverage Details`, `Monthly Premium`, and `Deductibles`.\n"
         "2. A **Summary of Key Differences**: After the table, provide a brief summary highlighting the key differences between the policies, "
-        "focusing on areas such as significant variations in coverage, affordability, premiums, or deductibles.\n"
-        "3. **Recommendations**: Indicate which policy is better and why, considering factors like affordability, coverage, and benefits.\n"
+        f"focusing on {insurance_type}-specific factors such as significant variations in coverage, affordability, premiums, or deductibles.\n"
+        f"3. **{insurance_type.capitalize()} Insurance Recommendations**: Indicate which {insurance_type} policy is better and why, considering factors like affordability, coverage, and benefits.\n"
         "4. **Explanations**: For each policy, provide an introductory paragraph summarizing the overall strengths and weaknesses of the policy, "
         "and then format the pros and cons in bullet points as follows:\n"
         "- **Pros**:\n"
@@ -83,9 +85,9 @@ def parse_gpt_response(response_text):
 
     return df, response_text
 
-def compare_policies_with_model(policies, model="Llama 3.1 70B"):
+def compare_policies_with_model(policies, model="Llama 3.1 70B",insurance_type="Auto"):
     """Generate a comparison report using the selected AI model."""
-    prompt = create_policy_comparison_prompt(policies)
+    prompt = create_policy_comparison_prompt(policies,insurance_type)
 
     try:
         if model == "Llama 3.1 70B":

@@ -22,17 +22,17 @@ def main():
     # Title and description
     st.title("AI-Powered Insurance Policy Comparison Tool")
     
-    # Sidebar for model selection
-    selected_model = model_options()
+    # Sidebar for model and insurance type selection
+    selected_model, selected_insurance_type = model_options()
 
     # Display form for insurance policy comparison
     policies = comparison_form()
-
+    
     # Comparison button logic
     if st.button("Compare Policies"):
         if all([p['provider'] and p['coverage'] for p in policies]):
             try:
-                _, ai_response_text = compare_policies_with_model(policies, model=selected_model)
+                _, ai_response_text = compare_policies_with_model(policies, model=selected_model, insurance_type=selected_insurance_type)
                 
                 if selected_model == "OpenAI GPT-4" and ai_response_text:
                     st.subheader("Full Comparison Report")
