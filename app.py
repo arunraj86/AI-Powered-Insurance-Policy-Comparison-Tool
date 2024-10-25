@@ -4,7 +4,7 @@ import logging
 from modules.logger import setup_logging
 from modules.comparison_ui import comparison_form
 from modules.ai_models_ui import model_options
-from modules.ai_api import compare_policies_with_model
+from modules.ai_model_handler import compare_policies_with_model
 
 # Set up logging
 setup_logging()

@@ -29,7 +29,21 @@ def comparison_form(insurance_type):
             provider = st.text_input(f"Provider Name (Policy {i + 1}):", key=f'provider_{i}')
             coverage = st.text_area(f"Coverage Details (Policy {i + 1}):", key=f'coverage_{i}')
             premium = st.number_input(f"Monthly Premium (Policy {i + 1}):", min_value=0.0, step=0.01, key=f'premium_{i}')
-            deductible = st.number_input(f"Deductible (Policy {i + 1}):", min_value=0.0, step=0.01, key=f'deductible_{i}')
+            
+            # Check if insurance type is Auto and adjust deductible inputs
+            if insurance_type.lower() == "auto":
+                collision_deductible = st.number_input(
+                    f"Collision Deductible (Policy {i + 1}):", min_value=0.0, step=0.01, key=f'collision_deductible_{i}'
+                )
+                comprehensive_deductible = st.number_input(
+                    f"Comprehensive Deductible (Policy {i + 1}):", min_value=0.0, step=0.01, key=f'comprehensive_deductible_{i}'
+                )
+                deductible = {
+                    'collision': collision_deductible,
+                    'comprehensive': comprehensive_deductible
+                }
+            else:
+                deductible = st.number_input(f"Deductible (Policy {i + 1}):", min_value=0.0, step=0.01, key=f'deductible_{i}')
 
             policy = {
                 'provider': provider,
@@ -47,5 +61,5 @@ def reset_form():
         # Reset text fields to empty and numeric fields to 0.0
         if 'provider_' in key or 'coverage_' in key:
             st.session_state[key] = ''
-        elif 'premium_' in key or 'deductible_' in key:
+        elif 'premium_' in key or 'deductible_' in key or 'collision_deductible_' in key or 'comprehensive_deductible_' in key:
             st.session_state[key] = 0.0
