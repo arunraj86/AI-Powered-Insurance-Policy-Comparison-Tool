@@ -1,53 +1,51 @@
+# main_app.py
+
 import streamlit as st
-from dotenv import load_dotenv
-import logging
-from modules.logger import setup_logging
+from modules.initialization import initialize_app
+from modules.ui_components import (
+    create_clear_buttons, 
+    display_sidebar_help, 
+    display_title,
+)
 from modules.comparison_ui import comparison_form
+from modules.business_logic import handle_comparison
+from modules.report_generation import generate_and_display_report
 from modules.ai_models_ui import model_options
-from modules.ai_model_handler import compare_policies_with_model
-
-# Set up logging
-setup_logging()
-
-# Load environment variables
-load_dotenv()
-
-def clean_response_text(response_text):
-    """Clean the model's response text by removing unwanted newlines and spaces."""
-    # Remove unnecessary newlines
-    cleaned_text = response_text.replace("\n", " ").replace("  ", " ")
-    return cleaned_text
 
 def main():
-    # Title and description
-    st.title("AI-Powered Insurance Policy Comparison Tool")
+    # Initialize the application
+    initialize_app()
+        
+    # Display the title
+    display_title()
     
     # Sidebar for model and insurance type selection
     selected_model, selected_insurance_type = model_options()
-
-    # Display form for insurance policy comparison
-    policies = comparison_form(selected_insurance_type)
-       
-    # Comparison button logic
-    if st.button("Compare Policies"):
-        if all([p['provider'] and p['coverage'] for p in policies]):
-            try:
-                _, ai_response_text = compare_policies_with_model(policies, model=selected_model, insurance_type=selected_insurance_type)
-                
-                if selected_model == "OpenAI GPT-4" and ai_response_text:
-                    st.subheader("Full Comparison Report")
-                    st.markdown(ai_response_text)
-
-                elif ai_response_text:
-                    st.subheader("Full Comparison Report")
-                    st.markdown(ai_response_text)
-
-            except Exception as e:
-                logging.error(f"Error in comparison: {e}")
-                st.error("An error occurred during comparison. Please check the logs for details.")
-                st.error(f"An error occurred during in app: {e}")  # Display the error in Streamlit UI
-        else:
-            st.error("Please fill out all fields for each policy.")
+    
+    # Detect model change and reset report if necessary
+    if not st.session_state.first_run:
+        if st.session_state.previous_model != selected_model:
+            # Reset the comparison report
+            st.session_state.ai_response_text = ''
+            st.session_state.previous_model = selected_model
+            st.toast("AI model selection changed. Previous comparison report has been cleared.", icon="⚠️")
+    else:
+        # On first run, set the previous_model to the selected_model without showing a warning
+        st.session_state.previous_model = selected_model
+        st.session_state.first_run = False
+    
+    # Create clear buttons
+    create_clear_buttons()
+    
+    # Create the 'Compare Policies' button
+    # This button's functionality is handled within 'handle_comparison'
+    handle_comparison(comparison_form(selected_insurance_type), selected_model, selected_insurance_type)
+    
+    # Generate and display report
+    generate_and_display_report()
+    
+    # Display sidebar help
+    display_sidebar_help()
 
 if __name__ == '__main__':
     main()

@@ -22,6 +22,8 @@ def create_policy_comparison_prompt(policies, insurance_type):
             "Please format the comparison as a table using the following format:\n"
             "| Provider Name | Coverage Summary | Coverage Limit | Monthly Premium | Collision Deductible | Comprehensive Deductible |\n"
             "| ------------- | ---------------- | -------------- | --------------- | -------------------- | ------------------------ |\n"
+            "| ABC           | Comprehensive coverage for life. | $500,000 Death Benefit | 50.0 | 0.0 | 0.0 |\n"
+            "| XYZ           | Basic coverage with additional riders. | $250,000 Death Benefit | 150.0 | 0.0 | 0.0 |\n\n"
         )
         for idx, policy in enumerate(policies):
             provider = policy.get("provider", "N/A")
@@ -58,6 +60,8 @@ def create_policy_comparison_prompt(policies, insurance_type):
             "Please format the comparison as a table using the following format:\n"
             "| Provider Name | Coverage Summary | Coverage Limit | Monthly Premium | Deductibles |\n"
             "| ------------- | ----------------- | -------------- | --------------- | ----------- |\n"
+            "| ABC           | Comprehensive coverage for life. | $500,000 Death Benefit | 50.0 | 0.0 |\n"
+            "| XYZ           | Basic coverage with additional riders. | $250,000 Death Benefit | 150.0 | 0.0 |\n\n"
         )
         for idx, policy in enumerate(policies):
             provider = policy.get("provider", "N/A")
