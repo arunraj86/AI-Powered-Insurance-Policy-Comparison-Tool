@@ -16,6 +16,8 @@ def comparison_form(insurance_type):
     if st.session_state['previous_insurance_type'] != insurance_type:
         reset_form()
         st.session_state.ai_response_text = ''  # Clear the comparison report
+        st.session_state.comparison_df = None
+        st.session_state.chart_data = None
         st.toast("Insurance type changed. Previous comparison report has been cleared.", icon="⚠️")
         st.session_state['previous_insurance_type'] = insurance_type 
 
@@ -71,7 +73,7 @@ def comparison_form(insurance_type):
                 'deductible': deductible
             }
             policies.append(policy)
-
+        
     # Validation Logic
     validation_passed = True
     error_messages = []

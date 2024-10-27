@@ -23,10 +23,12 @@ def main():
     selected_model, selected_insurance_type = model_options()
     
     # Detect model change and reset report if necessary
-    if not st.session_state.first_run:
-        if st.session_state.previous_model != selected_model:
+    if not st.session_state.get('first_run', True):
+        if st.session_state.get('previous_model') != selected_model:
             # Reset the comparison report
             st.session_state.ai_response_text = ''
+            st.session_state.comparison_df = None
+            st.session_state.chart_data = None
             st.session_state.previous_model = selected_model
             st.toast("AI model selection changed. Previous comparison report has been cleared.", icon="⚠️")
     else:
@@ -37,11 +39,13 @@ def main():
     # Create clear buttons
     create_clear_buttons()
     
-    # Create the 'Compare Policies' button
-    # This button's functionality is handled within 'handle_comparison'
-    handle_comparison(comparison_form(selected_insurance_type), selected_model, selected_insurance_type)
+    # Render the comparison form
+    policies = comparison_form(selected_insurance_type)
     
-    # Generate and display report
+    # Handle the comparison logic
+    handle_comparison(policies, selected_model, selected_insurance_type)
+    
+    # Generate and display report and chart
     generate_and_display_report()
     
     # Display sidebar help

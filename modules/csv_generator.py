@@ -1,69 +1,35 @@
 # modules/csv_generator.py
 
 import pandas as pd
-import markdown
-from bs4 import BeautifulSoup
-import logging
+import re
 
 def create_csv_from_markdown(markdown_text):
     """
-    Convert Markdown text to CSV format by extracting tables.
+    Converts a markdown table to CSV format.
 
-    Parameters:
-        markdown_text (str): The Markdown formatted text containing tables.
+    Args:
+        markdown_text (str): The markdown text containing the table.
 
     Returns:
-        str: A single CSV string combining all extracted tables with headers.
+        str: CSV formatted string.
     """
-    logging.info("Starting CSV generation from Markdown.")
+    # Extract the markdown table
+    table_start = markdown_text.find('|')
+    table_end = markdown_text.rfind('|')
 
-    # Convert Markdown to HTML with table extension
-    try:
-        html = markdown.markdown(markdown_text, extensions=['tables'])
-        logging.debug("Converted Markdown to HTML.")
-    except Exception as e:
-        logging.error(f"Failed to convert Markdown to HTML: {e}")
-        return ""
+    if table_start == -1 or table_end == -1:
+        return ""  # No table found
 
-    # Parse HTML content
-    try:
-        soup = BeautifulSoup(html, "html.parser")
-        logging.debug("Parsed HTML content with BeautifulSoup.")
-    except Exception as e:
-        logging.error(f"Failed to parse HTML with BeautifulSoup: {e}")
-        return ""
+    table_text = markdown_text[table_start:table_end + 1]
+    lines = table_text.strip().split('\n')
 
-    # Find all tables in the HTML
-    tables = soup.find_all("table")
-    logging.info(f"Found {len(tables)} table(s) in the Markdown.")
+    headers = [header.strip() for header in lines[0].split('|') if header.strip()]
+    rows = []
 
-    if not tables:
-        logging.warning("No tables found in the provided Markdown text.")
-        return ""
+    for line in lines[2:]:  # Skip header and separator
+        columns = [col.strip() for col in line.split('|') if col.strip()]
+        if columns:
+            rows.append(columns)
 
-    # Initialize a list to hold CSV strings
-    csv_list = []
-
-    for idx, table in enumerate(tables, start=1):
-        try:
-            # Use pandas to read the HTML table
-            df = pd.read_html(str(table))[0]
-            logging.debug(f"Extracted Table_{idx} with shape {df.shape}.")
-
-            # Replace any newline characters in the data to prevent CSV format issues
-            df = df.replace('\n', ' ', regex=True)
-
-            # Convert DataFrame to CSV string
-            csv_string = df.to_csv(index=False)
-
-            # Add a header to identify the table
-            csv_list.append(f"Table_{idx}\n{csv_string}\n")
-            logging.debug(f"Converted Table_{idx} to CSV format.")
-        except Exception as e:
-            logging.error(f"Failed to process Table_{idx}: {e}")
-
-    # Combine all tables into a single CSV string
-    combined_csv = "\n".join(csv_list)
-    logging.info("Completed CSV generation from Markdown.")
-
-    return combined_csv
+    df = pd.DataFrame(rows, columns=headers)
+    return df.to_csv(index=False)

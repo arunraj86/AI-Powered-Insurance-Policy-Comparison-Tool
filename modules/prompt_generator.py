@@ -1,3 +1,5 @@
+# modules/prompt_generator.py
+
 def create_policy_comparison_prompt(policies, insurance_type):
     """Create a structured prompt to compare insurance policies with markdown table format."""
     num_policies = len(policies)
@@ -19,6 +21,12 @@ def create_policy_comparison_prompt(policies, insurance_type):
             "  - List the benefits of the policy, such as lower premiums, higher coverage, or better terms.\n"
             "- **Cons**:\n"
             "  - List the downsides of the policy, such as higher premiums, lower coverage, or less favorable terms.\n\n"
+            "5. **Chart Data**: Provide a JSON object containing the following key-value pairs for each policy:\n"
+            "- `Provider`: Provider Name\n"
+            "- `Monthly Premium`: Monthly Premium ($)\n"
+            "- `Coverage Limit`: Coverage Limit ($)\n"
+            "- `Deductibles`: Deductibles ($)\n\n"
+            "Ensure the JSON object is well-formatted and includes all policies."
             "Please format the comparison as a table using the following format:\n"
             "| Provider Name | Coverage Summary | Coverage Limit | Monthly Premium | Collision Deductible | Comprehensive Deductible |\n"
             "| ------------- | ---------------- | -------------- | --------------- | -------------------- | ------------------------ |\n"
@@ -37,6 +45,16 @@ def create_policy_comparison_prompt(policies, insurance_type):
                 f"| {provider} | {coverage} | {coverage_limit} | "
                 f"{premium} | {collision_deductible} | {comprehensive_deductible} |\n"
             )
+        # Add a ```json code block for Chart Data
+        prompt += "\n**Chart Data**\n```json\n[\n"
+        for policy in policies:
+            provider = policy.get("provider", "N/A")
+            premium = policy.get("premium", 0.0)
+            coverage_limit = policy.get("coverage_limit", 0.0)
+            deductibles = policy.get("deductible", 0.0)
+            prompt += f"  {{\n    \"Provider\": \"{provider}\",\n    \"Monthly Premium\": {premium},\n    \"Coverage Limit\": {coverage_limit},\n    \"Deductibles\": {deductibles}\n  }},\n"
+        prompt = prompt.rstrip(',\n') + "\n]\n```"
+
         return prompt  # Ensure prompt is returned for auto insurance
 
     else:
@@ -57,6 +75,12 @@ def create_policy_comparison_prompt(policies, insurance_type):
             "  - List the benefits of the policy, such as lower premiums, higher coverage, or better terms.\n"
             "- **Cons**:\n"
             "  - List the downsides of the policy, such as higher premiums, lower coverage, or less favorable terms.\n\n"
+            "5. **Chart Data**: Provide a JSON object containing the following key-value pairs for each policy:\n"
+            "- `Provider`: Provider Name\n"
+            "- `Monthly Premium`: Monthly Premium ($)\n"
+            "- `Coverage Limit`: Coverage Limit ($)\n"
+            "- `Deductibles`: Deductibles ($)\n\n"
+            "Ensure the JSON object is well-formatted and includes all policies."
             "Please format the comparison as a table using the following format:\n"
             "| Provider Name | Coverage Summary | Coverage Limit | Monthly Premium | Deductibles |\n"
             "| ------------- | ----------------- | -------------- | --------------- | ----------- |\n"
@@ -74,4 +98,14 @@ def create_policy_comparison_prompt(policies, insurance_type):
                 f"| {provider} | {coverage} | {coverage_limit} | "
                 f"{premium} | {deductible} |\n"
             )
-        return prompt  # Ensure prompt is returned for other insurance types
+        # Add a ```json code block for Chart Data
+        prompt += "\n**Chart Data**\n```json\n[\n"
+        for policy in policies:
+            provider = policy.get("provider", "N/A")
+            premium = policy.get("premium", 0.0)
+            coverage_limit = policy.get("coverage_limit", 0.0)
+            deductibles = policy.get("deductible", 0.0)
+            prompt += f"  {{\n    \"Provider\": \"{provider}\",\n    \"Monthly Premium\": {premium},\n    \"Coverage Limit\": {coverage_limit},\n    \"Deductibles\": {deductibles}\n  }},\n"
+        prompt = prompt.rstrip(',\n') + "\n]\n```"
+
+        return prompt  # Ensure prompt is returned for auto insurance
